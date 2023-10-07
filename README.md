@@ -20,10 +20,7 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    ```
 3. We can set the python environment with pip:
    ```{bash}
-   ## For Vidul
-   pip install torch==2.0.0+cu117 torchvision==0.15.1+cu117 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117
-   ## For Sara
-   pip install torch==1.12.1+cu102 torchvision==0.13.1+cu102 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu102  ## For Sara
+   pip install torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu117
    cd <path-to-this-repo>/inference/
    pip install "fschat[model_worker,webui]"
    pip install -r requirements.txt
@@ -33,7 +30,7 @@ For runing inference, we have to prepare two things locally:
 1. Local LLM Weights, if the nodes can have access to the internet, we can also use the online HuggingFace Model Hubs.
 2. Local File for inference, to fit this code, the file have to be reformatted to a .jsonl file, in which each line presents one sample and is formatted as:
    ```
-   {'sample_idx': <sample_idx>, 'query': <input_query>}
+   {'sample_idx': <sample_idx>, 'instruction': <input_query>}
    ```
    Basically, we can use json package in Python to generate such formats. We have an code example (here)[].
 
@@ -41,7 +38,7 @@ For runing inference, we have to prepare two things locally:
 Here can we start inference! Using these lines:
 ```{bash}
 cd <path-to-this-repo>/inference/
-bash ./llm_inference.sh <local_model_path> <input_jsonl_file> <output_file_directory_name>
+bash ./llm_inference.sh <local_model_path> <input_jsonl_file> <output_file_directory_name> <number-of-gpu-to-use>
 ```
 Then we can check the output jsonl file in output/<output_file_directory_name>/results.jsonl.
 

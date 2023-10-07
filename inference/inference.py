@@ -6,6 +6,7 @@ from tqdm import tqdm
 from vllm import LLM, SamplingParams
 from fastchat.model import get_conversation_template
 import numpy as numpy
+from transformers import AutoTokenizer
 
 
 def run_eval(
@@ -16,8 +17,24 @@ def run_eval(
     max_new_token,
     tp_size,
 ):
-
-    model = LLM(model=model_path, tensor_parallel_size=tp_size)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
+    special_tokens_dict = dict()
+    if tokenizer.pad_token is None:
+        special_tokens_dict["pad_token"] = '<pad>'
+    if tokenizer.eos_token is None:
+        special_tokens_dict["eos_token"] = '</s>'
+    if tokenizer.bos_token is None:
+        special_tokens_dict["bos_token"] = '<s>'
+    if tokenizer.unk_token is None:
+        special_tokens_dict["unk_token"] = '<unk>'
+    if len(special_tokens_dict) > 0:
+        tokenizer.add_special_tokens(special_tokens_dict)
+        tokenizer.save_pretrained(model_path)
+    try:
+        model = LLM(model=model_path, tensor_parallel_size=tp_size)
+    except RecursionError:
+        model = LLM(model=model_path, tokenizer_mode='slow', tensor_parallel_size=tp_size)
+    print('model loadeds')
     sampling_params = SamplingParams(temperature=0.7, max_tokens=max_new_token)
 
     prompts = []
@@ -81,13 +98,13 @@ if __name__ == "__main__":
     )
     parser.add_argument("--model-id", type=str, required=True)
     parser.add_argument(
-        "--question_file",
+        "--question-file",
         type=str,
         default=None,
         help="The name of the benchmark question set.",
     )
     parser.add_argument(
-        "--answer_file",
+        "--answer-file",
         type=str,
         default=None,
         help="The output answer file.",
@@ -104,26 +121,24 @@ if __name__ == "__main__":
     with open(args.question_file, 'r') as f:
         questions = [json.loads(item) for item in f.readlines()]
     
-    if 'WORLD_SIZE' in os.environ and os.environ['WORLD_SIZE'] > 1:
+    if 'WORLD_SIZE' in os.environ and int(os.environ['WORLD_SIZE']) > 1:
         num_replicas = int(os.environ['WORLD_SIZE'])
         rank = int(os.environ['RANK'])
         tp_size = torch.cuda.device_count() // num_replicas
-
         devices = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
-        torch.cuda.set_device(devices)
-
+        # torch.cuda.set_device(devices)
         total_size = len(questions)
         questions = questions[rank:total_size:num_replicas]
         args.answer_file = args.answer_file.replace(".jsonl", f"_{rank}.jsonl")
 
         print(f"RANK: {rank} | NUM_REPLICAS: {num_replicas} | devices : {devices}")
     else:
-        raise KeyError
+        tp_size = 1
 
     print(f"Output to {args.answer_file}")
     print(f"Num Questions: {len(questions)}")
     print(f"Conv Template: {get_conversation_template(args.model_id)}")
-
+    
     run_eval(
         args.model_path,
         args.model_id,
