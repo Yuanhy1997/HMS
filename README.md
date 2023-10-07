@@ -25,6 +25,7 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    ## For Sara
    pip install torch==1.12.1+cu102 torchvision==0.13.1+cu102 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu102  ## For Sara
    cd <path-to-this-repo>/inference/
+   pip install "fschat[model_worker,webui]"
    pip install -r requirements.txt
    ```
 
@@ -40,8 +41,8 @@ For runing inference, we have to prepare two things locally:
 Here can we start inference! Using these lines:
 ```{bash}
 cd <path-to-this-repo>/inference/
-bash ./llm_inference.sh <local_model_path> <input_jsonl_file> <output_file_directory> <batch_size>
+bash ./llm_inference.sh <local_model_path> <input_jsonl_file> <output_file_directory_name>
 ```
-Then we can check the output jsonl file in <output_file_directory>.
+Then we can check the output jsonl file in output/<output_file_directory_name>/results.jsonl.
 
 

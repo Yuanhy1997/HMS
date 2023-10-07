@@ -1,7 +1,8 @@
 vllm
-transformers==4.33.0
+transformers
 datasets
 accelerate
 sentencepiece
 openai
 wandb
+ray
