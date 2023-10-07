@@ -46,3 +46,50 @@ bash ./llm_inference.sh <local_model_path> <input_jsonl_file> <output_file_direc
 Then we can check the output jsonl file in output/<output_file_directory_name>/results.jsonl.
 
 
+
+## Fine-tuning
+
+
+
+To start with, current open-source LLMs mainly based on PyTorch and HuggingFace Hubs. The first step is to set up environments:
+
+1. Download Anaconda for better management of virtual environments. To download and install, using the following line in the terminal:
+   ```{bash}
+   cd <where-to-download>
+   wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+   bash Anaconda3-2023.09-0-Linux-x86_64.sh
+   ```
+2. After installation, we can create an virtual environment by:
+   ```{bash}
+   conda create -n llm_inference python=3.10
+   ```
+   then we can go into this environment by:
+   ```{bash}
+   conda activate llm_finetune
+   ```
+3. We can set the python environment with pip:
+   ```{bash}
+   conda install cudatoolkit-dev -c conda-forge
+   conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.7 -c pytorch -c nvidia
+   cd <path-to-this-repo>/fine-tune/
+   pip install -r requirements.txt
+   ```
+   Then we have to install flash-attention for accelerated training, [flash-attn](https://github.com/Dao-AILab/flash-attention): 
+   To install:
+   1. Make sure that PyTorch is installed.
+   2. Make sure that `packaging` is installed (`pip install packaging`)
+   3. Make sure that `ninja` is installed and that it works correctly (e.g. `ninja
+   --version` then `echo $?` should return exit code 0). If not (sometimes `ninja
+   --version` then `echo $?` returns a nonzero exit code), uninstall then reinstall
+   `ninja` (`pip uninstall -y ninja && pip install ninja`). Without `ninja`,
+   compiling can take a very long time (2h) since it does not use multiple CPU
+   cores. With `ninja` compiling takes 3-5 minutes on a 64-core machine.
+   4. Then:
+   ```sh
+   pip install flash-attn --no-build-isolation
+   ```
+   Alternatively you can compile from source:
+   ```sh
+   python setup.py install
+   ```
+
