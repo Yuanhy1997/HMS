@@ -99,6 +99,7 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.7 -c pytorch -c nvidia
    cd <path-to-this-repo>/fine-tune/
    pip install -r requirements.txt
+   ```
    
 
 
