@@ -32,7 +32,7 @@ For runing inference, we have to prepare two things locally:
    ```
    {'sample_idx': <sample_idx>, 'instruction': <input_query>}
    ```
-   Basically, we can use json package in Python to generate such formats. We have an code example (here)[].
+   Basically, we can use json package in Python to generate such formats. We have an code example [here](./inference/generate_dummydata.py).
 
 
 Here can we start inference! Using these lines:
@@ -65,6 +65,8 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    conda activate llm_finetune
    ```
 3. We can set the python environment with pip:
+
+   *Note: Below is the instruction for A100 for Vidul*
    ```{bash}
    conda install cudatoolkit-dev -c conda-forge
    conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.7 -c pytorch -c nvidia
@@ -90,3 +92,30 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    python setup.py install
    ```
 
+
+   *Note: Below is the instruction for V100 for Sara*
+   ```{bash}
+   conda install cudatoolkit-dev -c conda-forge
+   conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.7 -c pytorch -c nvidia
+   cd <path-to-this-repo>/fine-tune/
+   pip install -r requirements.txt
+   
+
+
+
+After setting up environments, for runing fine-tuning, we also have to prepare two things locally:
+1. Local LLM Weights, if the nodes can have access to the internet, we can also use the online HuggingFace Model Hubs.
+2. Local File for fine-tuning, to fit this code, the file have to be reformatted to a .jsonl file, in which each line presents one sample and is formatted as:
+   ```
+   {'sample_idx': <sample_idx>, 'instruction': <input_query>, 'output': <input_query>}
+   ```
+   Basically, we can use json package in Python to generate such formats. We have an code example [here](./inference/generate_dummydata.py).
+
+*It should be noted that: Flash Attention which is a framework for fast fine-tuning with higher speed and low memory cost does not support V100. Therefore for A100, you can use llama_train.sh or llama2_train.sh for fine-tuning, which depends on the LLM you base on. For V100, you can use main_llama_noflash.sh for both llama and llama2. And This is why we have different env set up for Vidul and Sara.* 
+
+Here can we start fine-tuning! Using these lines:
+```{bash}
+cd <path-to-this-repo>/fine-tune/
+bash ./llama_train.sh <local_model_path> <input_jsonl_file> <output_file_directory_name> <number-of-gpu-to-use>
+```
+Then we can check the fine-tuned model in output/<output_file_directory_name>/

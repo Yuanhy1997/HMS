@@ -16,5 +16,5 @@ raw_questions = [
 
 with open('./dummy_data.jsonl', 'w') as f:
     for idx, item in enumerate(raw_questions):
-        f.write(json.dumps({'sample_idx': idx, 'instruction': item}) + '\n')
+        f.write(json.dumps({'sample_idx': idx, 'instruction': item, 'output': 'I don\'t know.'}) + '\n')
         
