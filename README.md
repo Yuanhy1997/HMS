@@ -120,3 +120,57 @@ cd <path-to-this-repo>/fine-tune/
 bash ./llama_train.sh <local_model_path> <input_jsonl_file> <output_file_directory_name> <number-of-gpu-to-use>
 ```
 Then we can check the fine-tuned model in output/<output_file_directory_name>/
+
+
+
+
+## SentenceBERT
+
+Setting up environments:
+
+1. Download Anaconda for better management of virtual environments. To download and install, using the following line in the terminal:
+   ```{bash}
+   cd <where-to-download>
+   wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+   bash Anaconda3-2023.09-0-Linux-x86_64.sh
+   ```
+2. After installation, we can create an virtual environment by:
+   ```{bash}
+   conda create -n sentencebert python=3.10
+   ```
+   then we can go into this environment by:
+   ```{bash}
+   conda activate sentencebert
+   ```
+3. We can set the python environment with pip:
+   ```{bash}
+   pip install torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu117
+   cd <path-to-this-repo>/sentenceBERT/
+   pip install -r requirements.txt
+   pip install -U sentence-transformers
+   ```
+
+After Setting Up environment, we have to download the embedding model locally or use the Huggingface Hub. The accessible models are listed [here](https://www.sbert.net/docs/pretrained_models.html#). 
+
+Then prepare all your sentences or terms for embeddings to a jsonl file with each line, here is an example:
+```
+{'input': 'harvard medical school'}
+```
+
+Finally, we can generate the sentence embedding by:
+```{bash}
+cd <path-to-this-repo>/sentenceBERT/
+CUDA_VISIBLE_DEVICES=0 python main.py <jsonl-file-of-sentences> <local-model-path> <output-dir-name>
+```
+The sentence embeddings will be saved to a .pkl file in './sentenceBERT/output/output-dir-name/embeddings.pkl'
+
+To load the saved sentence embedding for other use, you can run the following lines in a Python:
+```{python}
+import pickle
+with open(<path-to-embeddings.pkl>, "rb") as fIn:
+    stored_data = pickle.load(fIn)
+    stored_sentences = stored_data['sentences']
+    stored_embeddings = stored_data['embeddings']
+```
+
+
