@@ -1,5 +1,17 @@
 # Training and Inference of Large Language Models (LLMs) for Clinical Purposes
 
+## The Model List:
+
+For LLMs:
+   1. [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+   2. [WizardLM/WizardLM-7B-V1.0](https://huggingface.co/WizardLM/WizardLM-7B-V1.0)
+   3. [lmsys/vicuna-7b-v1.5](https://huggingface.co/lmsys/vicuna-7b-v1.5)
+   4. [lmsys/vicuna-7b-v1.5-16k](https://huggingface.co/lmsys/vicuna-7b-v1.5-16k)
+
+For SentenceBERT:
+   1. [sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
+   2. [sentence-transformers/multi-qa-mpnet-base-dot-v1](https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-dot-v1)
+
 ## Inference
 
 To start with, current open-source LLMs mainly based on PyTorch and HuggingFace Hubs. The first step is to set up environments:
@@ -12,21 +24,21 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    ```
 2. After installation, we can create an virtual environment by:
    ```{bash}
-   conda create -n llm_inference python=3.10
+   conda create -n inference python=3.10
    ```
    then we can go into this environment by:
    ```{bash}
-   conda activate llm_inference
+   conda activate inference
    ```
 3. We can set the python environment with pip:
    ```{bash}
    pip install torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu117
-   cd <path-to-this-repo>/inference/
-   pip install "fschat[model_worker,webui]"
    pip install -r requirements.txt
+   pip install "fschat[model_worker,webui]"
+   pip install -U sentence-transformers
    ```
 
-For runing inference, we have to prepare two things locally:
+<!-- For runing inference, we have to prepare two things locally:
 1. Local LLM Weights, if the nodes can have access to the internet, we can also use the online HuggingFace Model Hubs.
 2. Local File for inference, to fit this code, the file have to be reformatted to a .jsonl file, in which each line presents one sample and is formatted as:
    ```
@@ -41,10 +53,10 @@ cd <path-to-this-repo>/inference/
 bash ./llm_inference.sh <local_model_path> <input_jsonl_file> <output_file_directory_name> <number-of-gpu-to-use>
 ```
 Then we can check the output jsonl file in output/<output_file_directory_name>/results.jsonl.
+ -->
 
 
-
-## Fine-tuning
+<!-- ## Fine-tuning
 
 
 
@@ -172,5 +184,5 @@ with open(<path-to-embeddings.pkl>, "rb") as fIn:
     stored_sentences = stored_data['sentences']
     stored_embeddings = stored_data['embeddings']
 ```
-
+ -->
 
