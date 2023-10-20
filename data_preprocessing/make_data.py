@@ -7,6 +7,7 @@ import pickle
 import traceback
 from tqdm import tqdm
 import pandas as pd
+from nltk.tokenize import sent_tokenize
 
 
 ## Functions to process the data
@@ -103,11 +104,11 @@ def DataClean(data,labels_path,data_path=None,delete=None):
 
 
 
-df  = pd.read_csv("/content/malignant_neoplasm_updated_first_100_rows.csv").iloc[:10,]
+df  = pd.read_csv("./malignant_neoplasm_updated_first_100_rows.csv").iloc[:10,]
 
 
 NotesSections = DataClean(data=df,
-                          labels_path="/content/labels.txt",
+                          labels_path="./labels.txt",
                           delete=['Name','Admission Date','Discharge Date','Date of Birth','Followup Instructions'])
 
 Data = {}
@@ -125,6 +126,17 @@ for key, value in NotesSections.items():
 
     for para in paragraphs:
 
-        Sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z]\.)(?<![A-Z][a-z]\.)(?<! [a-z]\.)(?<![A-Z][a-z][a-z]\.)(?<=\.|\?|\!)\"*\s*\s*(?:\W*)(?<![A-Z])', para)
-
+        # Sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z]\.)(?<![A-Z][a-z]\.)(?<! [a-z]\.)(?<![A-Z][a-z][a-z]\.)(?<=\.|\?|\!)\"*\s*\s*(?:\W*)(?<![A-Z])', para)
+        Sentences = sent_tokenize(para)
         collection = collection + [s for s in Sentences if len(s) > 10]
+    
+    Data[key]['sentences'] = list(collection)
+    Data[key]['questions'] = [
+                                "Identify the sentence discussing stage.",
+                                "Identify the sentence discussing histology",
+                                "Identify the sentence discussing tumor size",
+                                "Identify the sentence discussing recurrence"
+                            ]
+
+with open('./mimic_data_for_retrieve.json', 'w') as f:
+    json.dump(Data, f, indent=2)
