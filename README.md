@@ -12,6 +12,9 @@ For SentenceBERT:
    1. [sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
    2. [sentence-transformers/multi-qa-mpnet-base-dot-v1](https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-dot-v1)
 
+For ColBERT:
+   The checkpoint can be downloaded from [here](https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/colbertv2.0.tar.gz).
+
 ## Inference
 
 To start with, current open-source LLMs mainly based on PyTorch and HuggingFace Hubs. The first step is to set up environments:
