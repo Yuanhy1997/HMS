@@ -11,6 +11,8 @@ For LLMs:
 For SentenceBERT:
    1. [sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
    2. [sentence-transformers/multi-qa-mpnet-base-dot-v1](https://huggingface.co/sentence-transformers/multi-qa-mpnet-base-dot-v1)
+   3. [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) ## IF using bge, activate normalized embeddings in sentencebert: model.encode(sentences_1, normalize_embeddings=True)
+   4. [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5)
 
 For ColBERT:
    The checkpoint can be downloaded from [here](https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/colbertv2.0.tar.gz).
