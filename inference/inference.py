@@ -81,7 +81,7 @@ class FewShotAdapter(BaseModelAdapter):
     use_fast_tokenizer = False
 
     def match(self, model_path: str):
-        return "fewshot" in model_path.lower() and "pretrainfewshot" in model_path.lower()
+        return "fewshot" in model_path.lower() and "pretrain" not in model_path.lower()
 
     def get_default_conv_template(self, model_path: str):
         return get_conv_template("custom_few_shot")
@@ -142,7 +142,7 @@ def run_eval(
         
     for item in tqdm(questions):
         torch.manual_seed(0)
-        if 'llama' in model_id and 'chat' not in model_id:
+        if 'llama' in model_id.lower() and 'chat' not in model_id.lower():
             conv = get_conversation_template('pretrainfewshot')
         else:
             conv = get_conversation_template(model_id)
