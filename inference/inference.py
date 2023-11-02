@@ -29,6 +29,19 @@ register_conv_template(
 
 register_conv_template(
     Conversation(
+        name="pretrain_few_shot",
+        system_message="",
+        roles=("Question", "Answer"),
+        messages=messages,
+        offset=2,
+        sep_style=SeparatorStyle.ADD_COLON_SINGLE,
+        sep="\n### ",
+        stop_str="###",
+    )
+)
+
+register_conv_template(
+    Conversation(
         name="one_shot",
         system_message="A chat between a curious human and an artificial intelligence clinician. "
         "The assistant gives helpful and detailed answers to the human's questions related to biomedicine.",
@@ -68,14 +81,24 @@ class FewShotAdapter(BaseModelAdapter):
     use_fast_tokenizer = False
 
     def match(self, model_path: str):
-        return "fewshot" in model_path.lower()
+        return "fewshot" in model_path.lower() and "pretrainfewshot" in model_path.lower()
 
     def get_default_conv_template(self, model_path: str):
         return get_conv_template("custom_few_shot")
 
+class PretrainFewShotAdapter(BaseModelAdapter):
+
+    use_fast_tokenizer = False
+
+    def match(self, model_path: str):
+        return "pretrainfewshot" in model_path.lower()
+
+    def get_default_conv_template(self, model_path: str):
+        return get_conv_template("pretrain_few_shot")
 
 register_model_adapter(EeveeAdapter)
 register_model_adapter(FewShotAdapter)
+register_model_adapter(PretrainFewShotAdapter)
 
 from fastchat.model import get_conversation_template
 import numpy as numpy
@@ -119,8 +142,8 @@ def run_eval(
         
     for item in tqdm(questions):
         torch.manual_seed(0)
-        if 'llama' in model_id and 'llama-2-chat' not in model_id:
-            conv = get_conversation_template('fewshot')
+        if 'llama' in model_id and 'chat' not in model_id:
+            conv = get_conversation_template('pretrainfewshot')
         else:
             conv = get_conversation_template(model_id)
         qs = few_shot_question_template.format(context=item['context'], question=item["question"])
