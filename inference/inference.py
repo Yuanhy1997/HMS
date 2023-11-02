@@ -111,10 +111,6 @@ def run_eval(
 
     prompts = []
 
-    if 'llama' in model_id and 'llama-2-chat' not in model_id:
-        conv = get_conversation_template('fewshot')
-    else:
-        conv = get_conversation_template(model_id)
 
     if conv.name=='eevee':
         question_template = '{context}\n\n### Question:\n{question}'
@@ -123,6 +119,10 @@ def run_eval(
         
     for item in tqdm(questions):
         torch.manual_seed(0)
+        if 'llama' in model_id and 'llama-2-chat' not in model_id:
+            conv = get_conversation_template('fewshot')
+        else:
+            conv = get_conversation_template(model_id)
         qs = few_shot_question_template.format(context=item['context'], question=item["question"])
         conv.append_message(conv.roles[0], qs)
         conv.append_message(conv.roles[1], None)

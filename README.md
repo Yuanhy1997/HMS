@@ -6,7 +6,7 @@ For LLMs:
    1. [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
    2. [WizardLM/WizardLM-7B-V1.0](https://huggingface.co/WizardLM/WizardLM-7B-V1.0)
    3. [lmsys/vicuna-7b-v1.5](https://huggingface.co/lmsys/vicuna-7b-v1.5)
-   4. [lmsys/vicuna-7b-v1.5-16k](https://huggingface.co/lmsys/vicuna-7b-v1.5-16k)
+   4. [lmsys/vic7b-una-v1.5-16k](https://huggingface.co/lmsys/vicuna-7b-v1.5-16k)
 
 For SentenceBERT:
    1. [sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
