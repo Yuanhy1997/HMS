@@ -170,3 +170,5 @@ if __name__ == "__main__":
         args.temperature,
         tp_size,
     )
+
+    torch.distribued.barrier()
