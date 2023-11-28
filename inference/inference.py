@@ -21,6 +21,8 @@ def run_eval(
     temperature,
     tp_size,
 ):
+
+
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
@@ -38,9 +40,16 @@ def run_eval(
         model = LLM(model=model_path, tensor_parallel_size=tp_size)
     except RecursionError:
         model = LLM(model=model_path, tokenizer_mode='slow', tensor_parallel_size=tp_size)
-    print('model loadeds')
-    sampling_params = SamplingParams(temperature=temperature, max_tokens=max_new_token)
+    
+    print(f"RANK: {os.environ['RANK']} | NUM_REPLICAS: {os.environ['WORLD_SIZE']} | devices : {model.device}")
+    print(f"Output to {answer_file}")
+    print(f"Num Questions: {len(questions)}")
+    if 'llama' in model_id.lower() and 'chat' not in model_id.lower():
+        print(f"Conv Template: {get_conversation_template('pretrainfewshot')}")
+    else:
+        print(f"Conv Template: {get_conversation_template(model_id)}")
 
+    sampling_params = SamplingParams(temperature=temperature, max_tokens=max_new_token)
 
     prompts = []
     if conv.name=='eevee':
@@ -148,14 +157,8 @@ if __name__ == "__main__":
         total_size = len(questions)
         questions = questions[rank:total_size:num_replicas]
         args.answer_file = args.answer_file.replace(".jsonl", f"_{rank}.jsonl")
-
-        print(f"RANK: {rank} | NUM_REPLICAS: {num_replicas} | devices : {devices}")
     else:
         tp_size = 1
-
-    print(f"Output to {args.answer_file}")
-    print(f"Num Questions: {len(questions)}")
-    print(f"Conv Template: {get_conversation_template(args.model_id)}")
     
     run_eval(
         args.model_path,
