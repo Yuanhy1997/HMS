@@ -6,7 +6,7 @@ For LLMs:
    1. [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
    2. [WizardLM/WizardLM-7B-V1.0](https://huggingface.co/WizardLM/WizardLM-7B-V1.0)
    3. [lmsys/vicuna-7b-v1.5](https://huggingface.co/lmsys/vicuna-7b-v1.5)
-   4. [lmsys/vic7b-una-v1.5-16k](https://huggingface.co/lmsys/vicuna-7b-v1.5-16k)
+   4. [lmsys/vicuna-7b-v1.5-16k](https://huggingface.co/lmsys/vicuna-7b-v1.5-16k)
 
 For SentenceBERT:
    1. [sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
@@ -37,8 +37,8 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    ```
 3. We can set the python environment with pip:
    ```{bash}
-   pip install torch==2.0.1+cu117 torchvision==0.15.2+cu117 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu117
    pip install -r requirements.txt
+   pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
    pip install "fschat[model_worker,webui]"
    pip install -U sentence-transformers
    pip install -U FlagEmbedding
