@@ -52,7 +52,7 @@ def run_eval(
     sampling_params = SamplingParams(temperature=temperature, max_tokens=max_new_token)
 
     prompts = []
-    if conv.name=='eevee':
+    if 'eevee' in model_id.lower():
         question_template = '{context}\n\n### Question:\n{question}'
     else:
         question_template = few_shot_question_template
