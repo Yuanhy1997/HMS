@@ -54,10 +54,7 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    pip install -U sentence-transformers
    pip install -U FlagEmbedding
 
-
-   cd ./sources/flash-attention
-   python setup.py install
-   cd ../../
+   pip install flash-attn --no-build-isolation
    ```
 
 <!-- For runing inference, we have to prepare two things locally:
