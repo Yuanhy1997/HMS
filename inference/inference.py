@@ -106,7 +106,7 @@ def run_eval(
 
         # Dump answers
         os.makedirs(os.path.dirname(answer_file), exist_ok=True)
-        with open(os.path.expanduser(answer_file), "w") as fout:
+        with open(os.path.expanduser(answer_file), "a") as fout:
             fout.write(json.dumps(question, ensure_ascii=False) + "\n")
 
 if __name__ == "__main__":
