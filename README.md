@@ -52,6 +52,11 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    pip install "fschat[model_worker,webui]"
    pip install -U sentence-transformers
    pip install -U FlagEmbedding
+
+
+   cd ./sources/flash-attention
+   python setup.py install
+   cd ../../
    ```
 
 <!-- For runing inference, we have to prepare two things locally:

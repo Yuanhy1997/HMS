@@ -12,6 +12,7 @@ jupyter
 jupyterlab
 ninja
 nltk
+packaging
 scipy
 spacy
 tqdm

@@ -21,5 +21,6 @@ then
      do
         echo $f
         cat $f >> output/$OUTPUT_DIR/results.jsonl
+        rm -rf $f
      done
 fi
