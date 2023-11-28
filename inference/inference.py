@@ -106,8 +106,8 @@ def run_eval(
 
         # Dump answers
         os.makedirs(os.path.dirname(answer_file), exist_ok=True)
-        with open(os.path.expanduser(answer_file), "a") as fout:
-            fout.write(json.dumps(question) + "\n")
+        with open(os.path.expanduser(answer_file), "w") as fout:
+            fout.write(json.dumps(question, ensure_ascii=False) + "\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -150,7 +150,6 @@ if __name__ == "__main__":
     if 'WORLD_SIZE' in os.environ and int(os.environ['WORLD_SIZE']) > 1:
         num_replicas = int(os.environ['WORLD_SIZE'])
         rank = int(os.environ['RANK'])
-        torch.distributed.init_process_group(world_size=num_replicas, rank=rank)
         
         tp_size = torch.cuda.device_count() // num_replicas
         device = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
@@ -171,5 +170,3 @@ if __name__ == "__main__":
         args.temperature,
         tp_size,
     )
-
-    torch.distributed.barrier()

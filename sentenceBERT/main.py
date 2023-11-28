@@ -29,6 +29,7 @@ for key in enumerate(data):
 
         for score, idx in zip(top_results[0], top_results[1]):
             results[query].append([corpus[idx], "Score:{:.4f}".format(score)])
+            
     data[key]['results'] = results
 
 

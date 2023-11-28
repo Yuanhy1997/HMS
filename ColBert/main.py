@@ -38,6 +38,5 @@ for key in tqdm(data):
 
     data[key]['results'] = qas
 
-
 with open('./mimic_data_for_retrieve_colbert_result.json', 'w') as f:
     json.dump(data, f, indent=2)
