@@ -38,7 +38,17 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
 3. We can set the python environment with pip:
    ```{bash}
    pip install -r requirements.txt
+
+   # cuda 11.8 version
+   pip uninstall torch -y
    pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
+   pip install -U xformers --index-url https://download.pytorch.org/whl/cu118
+   
+   # cuda 12.1 version
+   pip uninstall torch -y
+   pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
+   pip install -U xformers --index-url https://download.pytorch.org/whl/cu121
+   
    pip install "fschat[model_worker,webui]"
    pip install -U sentence-transformers
    pip install -U FlagEmbedding

@@ -150,11 +150,12 @@ if __name__ == "__main__":
     if 'WORLD_SIZE' in os.environ and int(os.environ['WORLD_SIZE']) > 1:
         num_replicas = int(os.environ['WORLD_SIZE'])
         rank = int(os.environ['RANK'])
+        torch.distributed.init_process_group('nccl', world_size=num_replicas, rand=rank)
+        
         tp_size = torch.cuda.device_count() // num_replicas
         device = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
         os.environ['CUDA_VISIBLE_DEVICES'] = device
-        # device = torch.device(f"cuda:{device}" if torch.cuda.is_available() else "cpu")
-        # torch.cuda.set_device(device)
+
         total_size = len(questions)
         questions = questions[rank:total_size:num_replicas]
         args.answer_file = args.answer_file.replace(".jsonl", f"_{rank}.jsonl")
