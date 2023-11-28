@@ -20,5 +20,5 @@ torchrun --nproc_per_node=$4 main_llama.py \
     --lr_scheduler_type "cosine" \
     --logging_steps 1 \
     --fsdp "full_shard auto_wrap" \
-    --fsdp_transformer_layer_cls_to_wrap 'LlamaDecoderLayer' \
+    --fsdp_config ./fsdp_configs/llama-7b-config.json \
     --tf32 True
