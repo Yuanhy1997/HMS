@@ -150,7 +150,7 @@ if __name__ == "__main__":
     if 'WORLD_SIZE' in os.environ and int(os.environ['WORLD_SIZE']) > 1:
         num_replicas = int(os.environ['WORLD_SIZE'])
         rank = int(os.environ['RANK'])
-        torch.distributed.init_process_group('nccl', world_size=num_replicas, rand=rank)
+        torch.distributed.init_process_group('nccl', world_size=num_replicas, rank=rank)
         
         tp_size = torch.cuda.device_count() // num_replicas
         device = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
