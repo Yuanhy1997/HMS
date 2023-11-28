@@ -41,7 +41,7 @@ def run_eval(
     except RecursionError:
         model = LLM(model=model_path, tokenizer_mode='slow', tensor_parallel_size=tp_size)
     
-    print(f"RANK: {os.environ['RANK']} | NUM_REPLICAS: {os.environ['WORLD_SIZE']} | devices : {model.device}")
+    print(f"RANK: {os.environ['RANK']} | NUM_REPLICAS: {os.environ['WORLD_SIZE']}")
     print(f"Output to {answer_file}")
     print(f"Num Questions: {len(questions)}")
     if 'llama' in model_id.lower() and 'chat' not in model_id.lower():
@@ -58,7 +58,6 @@ def run_eval(
         question_template = few_shot_question_template
         
     for item in tqdm(questions):
-        torch.manual_seed(0)
         if 'llama' in model_id.lower() and 'chat' not in model_id.lower():
             conv = get_conversation_template('pretrainfewshot')
         else:
@@ -152,7 +151,7 @@ if __name__ == "__main__":
         num_replicas = int(os.environ['WORLD_SIZE'])
         rank = int(os.environ['RANK'])
         tp_size = torch.cuda.device_count() // num_replicas
-        devices = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
+        # devices = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
         # torch.cuda.set_device(devices)
         total_size = len(questions)
         questions = questions[rank:total_size:num_replicas]
