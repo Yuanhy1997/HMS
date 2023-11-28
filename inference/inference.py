@@ -6,100 +6,8 @@ from tqdm import tqdm
 from vllm import LLM, SamplingParams
 from fastchat.model.model_adapter import model_adapters, register_model_adapter, BaseModelAdapter
 from fastchat.conversation import conv_templates, register_conv_template, Conversation, SeparatorStyle, get_conv_template
-
-few_shot_question_template = 'Given the contexts: {context}, please answer: {question} '
-with open('./few_shot_example.jsonl', 'r') as f:
-    incontext_few_shots = [json.loads(item) for item in f.readlines()]
-messages = [[("Human", few_shot_question_template.format(context=item['context'], question=item["question"])), ("Assistant", item["answer"])] for item in incontext_few_shots]
-messages = tuple(sum(messages, []))
-
-register_conv_template(
-    Conversation(
-        name="custom_few_shot",
-        system_message="A chat between a curious human and an artificial intelligence clinician. "
-        "The assistant gives helpful and detailed answers to the human's questions related to biomedicine.",
-        roles=("Human", "Assistant"),
-        messages=messages,
-        offset=2,
-        sep_style=SeparatorStyle.ADD_COLON_SINGLE,
-        sep="\n### ",
-        stop_str="###",
-    )
-)
-
-register_conv_template(
-    Conversation(
-        name="pretrain_few_shot",
-        system_message="",
-        roles=("Question", "Answer"),
-        messages=messages,
-        offset=2,
-        sep_style=SeparatorStyle.ADD_COLON_SINGLE,
-        sep="\n### ",
-        stop_str="###",
-    )
-)
-
-register_conv_template(
-    Conversation(
-        name="one_shot",
-        system_message="A chat between a curious human and an artificial intelligence clinician. "
-        "The assistant gives helpful and detailed answers to the human's questions related to biomedicine.",
-        roles=("Human", "Assistant"),
-        messages=messages[:2],
-        offset=2,
-        sep_style=SeparatorStyle.ADD_COLON_SINGLE,
-        sep="\n### ",
-        stop_str="###",
-    ),
-    override=True
-)
-
-register_conv_template(
-    Conversation(
-        name="eevee",
-        system_message="Below is a health record paired with a question that describes a task.  Write a response that appropriately answers the question.",
-        roles=("### Health Record", "### Answer"),
-        sep_style=SeparatorStyle.ADD_COLON_TWO,
-        sep="\n\n",
-        sep2="</s>",
-    )
-)
-
-class EeveeAdapter(BaseModelAdapter):
-
-    use_fast_tokenizer = False
-
-    def match(self, model_path: str):
-        return "eevee" in model_path.lower()
-
-    def get_default_conv_template(self, model_path: str):
-        return get_conv_template("eevee")
-
-class FewShotAdapter(BaseModelAdapter):
-
-    use_fast_tokenizer = False
-
-    def match(self, model_path: str):
-        return "fewshot" in model_path.lower() and "pretrain" not in model_path.lower()
-
-    def get_default_conv_template(self, model_path: str):
-        return get_conv_template("custom_few_shot")
-
-class PretrainFewShotAdapter(BaseModelAdapter):
-
-    use_fast_tokenizer = False
-
-    def match(self, model_path: str):
-        return "pretrainfewshot" in model_path.lower()
-
-    def get_default_conv_template(self, model_path: str):
-        return get_conv_template("pretrain_few_shot")
-
-register_model_adapter(EeveeAdapter)
-register_model_adapter(FewShotAdapter)
-register_model_adapter(PretrainFewShotAdapter)
-
+import custom_template
+from custom_template import few_shot_question_template
 from fastchat.model import get_conversation_template
 import numpy as numpy
 from transformers import AutoTokenizer
@@ -110,12 +18,13 @@ def run_eval(
     questions,
     answer_file,
     max_new_token,
+    temperature,
     tp_size,
 ):
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
-        special_tokens_dict["pad_token"] = '<pad>'
+        special_tokens_dict["pad_token"] = '<unk>'
     if tokenizer.eos_token is None:
         special_tokens_dict["eos_token"] = '</s>'
     if tokenizer.bos_token is None:
@@ -130,11 +39,10 @@ def run_eval(
     except RecursionError:
         model = LLM(model=model_path, tokenizer_mode='slow', tensor_parallel_size=tp_size)
     print('model loadeds')
-    sampling_params = SamplingParams(temperature=0.7, max_tokens=max_new_token)
+    sampling_params = SamplingParams(temperature=temperature, max_tokens=max_new_token)
+
 
     prompts = []
-
-
     if conv.name=='eevee':
         question_template = '{context}\n\n### Question:\n{question}'
     else:
@@ -220,6 +128,11 @@ if __name__ == "__main__":
         default=1024,
         help="The maximum number of new generated tokens.",
     )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.7,
+    )
 
     args = parser.parse_args()
 
@@ -250,5 +163,6 @@ if __name__ == "__main__":
         questions,
         args.answer_file,
         args.max_new_token,
+        args.temperature,
         tp_size,
     )
