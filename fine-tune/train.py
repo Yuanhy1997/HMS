@@ -27,7 +27,7 @@ DEFAULT_PAD_TOKEN = "<unk>"
 DEFAULT_EOS_TOKEN = "</s>"
 DEFAULT_BOS_TOKEN = "<s>"
 DEFAULT_UNK_TOKEN = "<unk>"
-PROMPT_TEMPLATE = "Human:\n{instruction}\n\n Assistant:"
+PROMPT_TEMPLATE = "Human:\n{query}\n\n Assistant:"
 
 @dataclass
 class ModelArguments:
@@ -101,7 +101,7 @@ class SupervisedDataset(Dataset):
         sources = [
             PROMPT_TEMPLATE.format_map(example) for example in list_data_dict
         ]
-        targets = [f"{example['output']}{tokenizer.eos_token}" for example in list_data_dict]
+        targets = [f"{example['response']}{tokenizer.eos_token}" for example in list_data_dict]
 
         logging.warning("Tokenizing inputs... This may take some time...")
         data_dict = preprocess(sources, targets, tokenizer)
