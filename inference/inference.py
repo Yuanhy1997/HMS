@@ -171,4 +171,4 @@ if __name__ == "__main__":
         tp_size,
     )
 
-    torch.distribued.barrier()
+    torch.distributed.barrier()
