@@ -32,7 +32,7 @@ PROMPT_TEMPLATE = "Human:\n{query}\n\n Assistant:"
 @dataclass
 class ModelArguments:
     model_name_or_path: Optional[str] = field(default="facebook/opt-125m")
-
+    use_flash_attn: bool = field(default=True)
 
 @dataclass
 class DataArguments:
@@ -149,7 +149,7 @@ def train():
     model = transformers.AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
-        use_flash_attention_2=True
+        use_flash_attention_2=training_args.use_flash_attn
     )
 
     tokenizer = transformers.AutoTokenizer.from_pretrained(

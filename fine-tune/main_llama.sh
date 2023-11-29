@@ -3,7 +3,7 @@ DATA_FILE=$2
 SAVE_PATH=$3
 
 wandb disabled
-torchrun --nproc_per_node=$4 main_llama_noflash.py \
+torchrun --nproc_per_node=$4 train.py \
     --model_name_or_path $MODEL_PATH \
     --data_path $DATA_FILE \
     --fp16 True \
