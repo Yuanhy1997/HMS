@@ -21,6 +21,8 @@ torchrun --nproc_per_node=$4 train.py \
     --warmup_ratio 0.03 \
     --lr_scheduler_type "cosine" \
     --logging_steps 1 \
-    --fsdp "full_shard auto_wrap" \
-    --fsdp_config ./fsdp_configs/llama-30b-config.json \
-    --tf32 True
+    --tf32 True \
+    --deepspeed ./deepspeed_configs/zero3.json \
+    # --fsdp "full_shard auto_wrap" \
+    # --fsdp_config ./fsdp_configs/llama-30b-config.json \
+   
