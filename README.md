@@ -57,6 +57,11 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    pip install flash-attn --no-build-isolation
    ```
 
+## On 8*80GB A100, fully sharded FSDP wihout offloading:
+Llama2-7b | 8 per GPU bsz
+Llama2-13b | 4 per GPU bsz
+Llama2-30b | 4 per GPU bsz
+
 <!-- For runing inference, we have to prepare two things locally:
 1. Local LLM Weights, if the nodes can have access to the internet, we can also use the online HuggingFace Model Hubs.
 2. Local File for inference, to fit this code, the file have to be reformatted to a .jsonl file, in which each line presents one sample and is formatted as:
