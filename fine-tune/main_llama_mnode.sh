@@ -4,7 +4,7 @@ SAVE_PATH=$3
 
 wandb disabled
 accelerate launch \
-    --config_file configs/fsdp_config.yaml \
+    --config_file "configs/fsdp_config.yaml" \
     --main_process_ip $MASTER_ADDR \
     --main_process_port $MASTER_PORT \
     --machine_rank $RANK \
