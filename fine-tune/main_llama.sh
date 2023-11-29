@@ -9,7 +9,7 @@ torchrun --nproc_per_node=$4 train.py \
     --fp16 True \
     --output_dir output/$SAVE_PATH \
     --num_train_epochs 3 \
-    --per_device_train_batch_size 4 \
+    --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 8 \
     --evaluation_strategy "no" \
@@ -23,5 +23,4 @@ torchrun --nproc_per_node=$4 train.py \
     --logging_steps 1 \
     --fsdp "full_shard auto_wrap" \
     --fsdp_config ./fsdp_configs/llama-7b-config.json \
-    --use_flash_attn false \
     --tf32 True
