@@ -23,4 +23,5 @@ torchrun --nproc_per_node=$4 train.py \
     --logging_steps 1 \
     --fsdp "full_shard auto_wrap" \
     --fsdp_config ./fsdp_configs/llama-7b-config.json \
+    --use_flash_attn false \
     --tf32 True
