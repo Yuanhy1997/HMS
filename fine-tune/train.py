@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Optional, Sequence
 import json
 import torch
+import pathlib
 import transformers
 from torch.utils.data import Dataset
 from transformers import Trainer
@@ -48,6 +49,15 @@ class TrainingArguments(transformers.TrainingArguments):
         metadata={"help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."},
     )
 
+def trainer_save_model_safe(trainer: transformers.Trainer):
+    from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+    from torch.distributed.fsdp import StateDictType, FullStateDictConfig
+
+    save_policy = FullStateDictConfig(offload_to_cpu=True, rank0_only=True)
+    with FSDP.state_dict_type(
+        trainer.model, StateDictType.FULL_STATE_DICT, save_policy
+    ):
+        trainer.save_model()
 
 def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedTokenizer) -> Dict:
     """Tokenize a list of strings."""
@@ -173,9 +183,18 @@ def train():
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
     trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
+    if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
+        trainer.train(resume_from_checkpoint=True)
+    else:
+        trainer.train()
     trainer.train()
     trainer.save_state()
-    trainer.save_model(output_dir=training_args.output_dir)
+
+    if trainer.is_deepspeed_enabled:
+        trainer.save_model(output_dir=training_args.output_dir)
+    else:
+        trainer_save_model_safe(trainer)
+    
 
 
 if __name__ == "__main__":
