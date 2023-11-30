@@ -190,7 +190,7 @@ def train():
     trainer.train()
     trainer.save_state()
 
-    with torch.autocast(dtype=torch.bfloat16):
+    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
         if trainer.is_deepspeed_enabled:
             trainer.save_model(output_dir=training_args.output_dir)
         else:
