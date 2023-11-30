@@ -7,7 +7,7 @@ fsdp_config:
   fsdp_backward_prefetch_policy: BACKWARD_PRE
   fsdp_cpu_ram_efficient_loading: true
   fsdp_forward_prefetch: false
-  fsdp_offload_params: true
+  fsdp_offload_params: false
   fsdp_sharding_strategy: 1
   fsdp_state_dict_type: SHARDED_STATE_DICT
   fsdp_sync_module_states: true
