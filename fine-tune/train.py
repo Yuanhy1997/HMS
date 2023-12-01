@@ -191,7 +191,6 @@ def train():
         trainer.train(resume_from_checkpoint=True)
     else:
         trainer.train()
-    trainer.train()
     trainer.save_state()
 
     # with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
