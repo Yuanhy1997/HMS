@@ -5,7 +5,7 @@ SAVE_PATH=$3
 accelerate launch --config_file "fsdp_configs/fsdp_config.yaml" train.py \
     --model_name_or_path $MODEL_PATH \
     --data_path $DATA_FILE \
-    --fp16 True \
+    --bf16 True \
     --output_dir output/$SAVE_PATH \
     --num_train_epochs 3 \
     --per_device_train_batch_size 1 \

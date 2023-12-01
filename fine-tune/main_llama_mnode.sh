@@ -6,7 +6,7 @@ wandb disabled
 torchrun --nproc_per_node=8 --master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --nnode 2 --node_rank=$RANK train.py \
     --model_name_or_path $MODEL_PATH \
     --data_path $DATA_FILE \
-    --fp16 True \
+    --bf16 True \
     --output_dir output/$SAVE_PATH \
     --num_train_epochs 3 \
     --per_device_train_batch_size 1 \
