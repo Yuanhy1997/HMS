@@ -57,8 +57,10 @@ def trainer_save_model_safe(trainer: transformers.Trainer):
     with FSDP.state_dict_type(
         trainer.model, StateDictType.FULL_STATE_DICT, save_policy
     ):
-        if trainer.config.bf16:
+        if trainer.args.bf16:
             trainer.model.to(torch.bfloat16)
+        if trainer.args.fp16:
+            trainer.model.to(torch.float16)
         trainer.save_model()
 
 def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedTokenizer) -> Dict:
