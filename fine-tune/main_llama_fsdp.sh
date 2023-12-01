@@ -8,7 +8,7 @@ torchrun --nproc_per_node=$4 train.py \
     --data_path $DATA_FILE \
     --bf16 True \
     --output_dir output/$SAVE_PATH \
-    --num_train_epochs 3 \
+    --num_train_epochs 1 \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 8 \
