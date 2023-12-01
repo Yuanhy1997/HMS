@@ -190,11 +190,11 @@ def train():
     trainer.train()
     trainer.save_state()
 
-    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-        if trainer.is_deepspeed_enabled:
-            trainer.save_model(output_dir=training_args.output_dir)
-        else:
-            trainer_save_model_safe(trainer)
+    # with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+    if trainer.is_deepspeed_enabled:
+        trainer.save_model(output_dir=training_args.output_dir)
+    else:
+        trainer_save_model_safe(trainer)
     
 
 
