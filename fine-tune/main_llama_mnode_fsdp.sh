@@ -29,7 +29,7 @@ accelerate launch \
     --lr_scheduler_type "cosine" \
     --logging_steps 1 \
     --tf32 True \
-    # --deepspeed ./deepspeed_configs/zero2.json \
-    # --fsdp "full_shard auto_wrap" \
-    # --fsdp_config ./fsdp_configs/llama-30b-config.json \
+    --fsdp "full_shard auto_wrap" \
+    --fsdp_config ./fsdp_configs/llama-30b-config.json \
+    
    

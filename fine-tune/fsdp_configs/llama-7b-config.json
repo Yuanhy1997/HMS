@@ -3,5 +3,4 @@
         "LlamaDecoderLayer"
     ],
     "activation_checkpointing": false,
-    "bf16": true
 }
