@@ -55,13 +55,18 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    pip install -U FlagEmbedding
 
    pip install flash-attn --no-build-isolation
+   pip install deepspeed
    ```
 
-## On 8*80GB A100, fully sharded FSDP wihout offloading:
-Llama2-7b | 8 per GPU bsz | 512 max len
-Llama2-13b | 4 per GPU bsz | 512 max len
-Llama2-30b | OOM | 512 max len
+## On 8*80GB A100, fully sharded FSDP wihout offloading, activation checkpointing and gradient checkpointing:
 
+||||
+|---|---|---|
+|Llama2-7b | 8 per GPU bsz | 512 max len|
+|Llama2-13b | 4 per GPU bsz | 512 max len|
+|Llama2-30b | OOM, require 16*A100 | 512 max len|
+|Llama2-70b | OOM, require 24*A100 | 512 max len|
+|Llama2-70b | OOM, require 32*A100 | 2048 max len|
 
 <!-- For runing inference, we have to prepare two things locally:
 1. Local LLM Weights, if the nodes can have access to the internet, we can also use the online HuggingFace Model Hubs.
