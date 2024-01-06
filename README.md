@@ -42,10 +42,13 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    pip install -U FlagEmbedding
 
    # cuda 11.8 version
-   pip install ./sources/vllm-0.2.2+cu118-cp310-cp310-manylinux1_x86_64.whl
+   # pip install ./sources/vllm-0.2.2+cu118-cp310-cp310-manylinux1_x86_64.whl
+   export VLLM_VERSION=0.2.4
+   export PYTHON_VERSION=39
+   pip install https://github.com/vllm-project/vllm/releases/download/v${VLLM_VERSION}/vllm-${VLLM_VERSION}+cu118-cp${PYTHON_VERSION}-cp${PYTHON_VERSION}-manylinux1_x86_64.whl
    pip uninstall torch -y
    pip install -U xformers --index-url https://download.pytorch.org/whl/cu118
-   pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu118
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
    
    # cuda 12.1 version
