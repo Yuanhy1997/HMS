@@ -66,6 +66,7 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
 
 ## Setting up environments on MGB
 
+Make sure the cuda version is 12.1!!
 ```{bash}
 pip install transformers
 pip install sentencepiece
