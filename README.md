@@ -63,6 +63,30 @@ To start with, current open-source LLMs mainly based on PyTorch and HuggingFace 
    pip install deepspeed
    ```
 
+
+## Setting up environments on MGB
+
+```{bash}
+pip install transformers
+pip install sentencepiece
+pip install "sglang[all]"
+```
+
+First, hosting the language model locally, run this line in terminal:
+```{bash}
+python -m sglang.launch_server --model-path <path-to-saved-model> --port 30000 --tp <number-of-gpus>
+```
+
+Then use this [python code](./inference/sglang_inference_llama.py) to activate inference:
+```{bash}
+python sglang_inference_llama.py <path-to-input-file> <path-to-output-file>
+```
+The input file should be a jsonl file with each line is a dict contains the input under the 'query' key.
+For example you can use this template to fit the EHR and the question to formalize the query:
+> 'Given the electronic health record:\n {EHR} \n\nPlease answer this question accordingly:\n {question}'
+
+
+
 ## On 8*80GB A100, fully sharded FSDP wihout offloading, activation checkpointing and gradient checkpointing:
 
 ||||

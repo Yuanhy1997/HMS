@@ -26,7 +26,7 @@ results = []
 for i, state in enumerate(states):
     results.append({'Question': questions[i]['query'], 'Answer': state['answer']})
 
-with open(sys.argv[3], 'w') as f:
+with open(sys.argv[2], 'w') as f:
     for item in results:
         f.write(json.dumps(item, ensure_ascii=False) + '\n')
 
