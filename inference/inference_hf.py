@@ -1,3 +1,7 @@
+'''
+This file is only for one process.
+'''
+
 import argparse
 import json
 import os
@@ -33,7 +37,7 @@ def run_eval(
     # if len(special_tokens_dict) > 0:
     #     tokenizer.add_special_tokens(special_tokens_dict)
     #     tokenizer.save_pretrained(model_path)
-    try:
+    # try:
     #     model = LLM(model=model_path, tensor_parallel_size=tp_size)
     # except RecursionError:
     #     model = LLM(model=model_path, tokenizer_mode='slow', tensor_parallel_size=tp_size)
@@ -47,6 +51,7 @@ def run_eval(
     
     sampling_params = SamplingParams(temperature=temperature, max_tokens=max_new_token)
     _questions = []
+
     for item in tqdm(questions):
         messages = [
             {"role": "system", "content": "You are a helpful assistant."},
@@ -165,19 +170,7 @@ if __name__ == "__main__":
     with open(args.question_file, 'r') as f:
         questions = [json.loads(item) for item in f.readlines()]
     
-    if 'WORLD_SIZE' in os.environ and int(os.environ['WORLD_SIZE']) > 1:
-        num_replicas = int(os.environ['WORLD_SIZE'])
-        rank = int(os.environ['RANK'])
-        
-        tp_size = torch.cuda.device_count() // num_replicas
-        device = ','.join([str(i) for i in range(rank*tp_size, (rank+1)*tp_size)])
-        os.environ['CUDA_VISIBLE_DEVICES'] = device
-
-        total_size = len(questions)
-        questions = questions[rank:total_size:num_replicas]
-        args.answer_file = args.answer_file.replace(".jsonl", f"_{rank}.jsonl")
-    else:
-        tp_size = 8
+    tp_size = 1
     
     run_eval(
         args.model_path,
