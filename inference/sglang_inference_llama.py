@@ -24,7 +24,9 @@ states = text_qa.run_batch(
 
 results = []
 for i, state in enumerate(states):
-    results.append({'Question': questions[i]['query'], 'Answer': state['answer']})
+    tmp = questions[i]
+    tmp['generated_response'] = state['answer']
+    results.append(tmp)
 
 with open(sys.argv[2], 'w') as f:
     for item in results:

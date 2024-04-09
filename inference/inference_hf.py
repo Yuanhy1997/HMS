@@ -9,7 +9,7 @@ import torch
 from tqdm import tqdm
 from vllm import LLM, SamplingParams
 import numpy as numpy
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 PROMPT_TEMPLATE = "Human:\n{query}\n\n Assistant:"
 
@@ -50,42 +50,18 @@ def run_eval(
     print(f"Num Questions: {len(questions)}")
     
     sampling_params = SamplingParams(temperature=temperature, max_tokens=max_new_token)
-    _questions = []
-
-    for item in tqdm(questions):
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": item['query']}
-        ]
-        text = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
-        )
-        tokens_len = len(tokenizer(text + item['response'])['input_ids'])
-        if token_len > 2048:
-            continue
-        _questions.append(item)
-
-    questions = _questions[:100]
+    
     prompts = []
     for item in tqdm(questions):
-        messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": item['query']}
-        ]
-        text = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
-        )
+        
+        text = PROMPT_TEMPLATE.format(query=item['query'])
         prompts.append(text)
 
     prompt_id_map = {prompt: idx for idx, prompt in enumerate(prompts)}
 
     # outputs = model.generate(prompts, sampling_params)
     outputs = []
-    for item in prompts:
+    for item in tqdm(prompts):
         model_inputs = tokenizer([item], return_tensors="pt").to(model.device)
 
         generated_ids = model.generate(
@@ -94,38 +70,14 @@ def run_eval(
         )
         outputs.append(output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids))
 
-    for output in outputs:
+    for i, output in enumerate(outputs):
         # output_ids = output.outputs[0].token_ids
-        # question = questions[prompt_id_map[output.prompt]]
+        question = questions[i]
 
         response = tokenizer.batch_decode(output, skip_special_tokens=True)
-        # be consistent with the template's stop_token_ids
-        # if conv.stop_token_ids:
-        #     stop_token_ids_index = [
-        #         i
-        #         for i, id in enumerate(output_ids)
-        #         if id in conv.stop_token_ids
-        #     ]
-        #     if len(stop_token_ids_index) > 0:
-        #         output_ids = output_ids[: stop_token_ids_index[0]]
 
-        # output = model.get_tokenizer().decode(
-        #     output_ids,
-        #     spaces_between_special_tokens=False,
-        # )
-        # # if conv.stop_str and output.find(conv.stop_str) > 0:
-        #     output = output[: output.find(conv.stop_str)]
-        for special_token in model.get_tokenizer().special_tokens_map.values():
-            if isinstance(special_token, list):
-                for special_tok in special_token:
-                    output = output.replace(special_tok, "")
-            else:
-                output = output.replace(special_token, "")
-        output = output.strip()
-
-
+        output = response[0].strip()
         question[f'output_{model_id}'] = output
-        # question['generator'] = model_id
 
         # Dump answers
         os.makedirs(os.path.dirname(answer_file), exist_ok=True)
