@@ -17,6 +17,26 @@ For SentenceBERT:
 For ColBERT:
    The checkpoint can be downloaded from [here](https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/colbertv2.0.tar.gz).
 
+## Inference (Simplest Way, but Relatively Slow, good for small scale testing)
+
+```{bash}
+pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu121
+pip install transformers
+pip install sentencepiece
+pip install accelerate
+pip install datasets
+```
+you can adjust your pytorch installation to your cuda version (to check the cuda version just run: nvidia-smi),
+different version of pytorch can be found [here](https://pytorch.org/get-started/previous-versions/) ps: better use the pip install ones.
+
+The code for inference, you can use the script [here](./inference/inference.sh), by running
+```{bash}
+bash inference.sh <path-to-the-model> <path-to-input-file> <path-to-output-file>
+```
+
+If you are testing the 7B model, one A100 is good for inference; 
+while if you are using 70B model, please make sure the total amount of GPU memory is greater than 160GB (2 A100 80GB or 4 A100 40GB).
+
 ## Inference
 
 To start with, current open-source LLMs mainly based on PyTorch and HuggingFace Hubs. The first step is to set up environments:
