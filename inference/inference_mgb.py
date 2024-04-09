@@ -122,8 +122,10 @@ def run_eval(
         output_stage = parse_func(output_model)
 
         os.makedirs(os.path.dirname(answer_file), exist_ok=True)
+        
         with open(os.path.expanduser(answer_file), "a") as fout:
             fout.write(json.dumps({'key': i, 'output': output, 'stage': stage}, ensure_ascii=False) + "\n")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
